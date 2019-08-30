@@ -1,14 +1,10 @@
 <?php
 
-// $nom= $_POST["nom"];
-$nom=isset($_POST['form']);
-$date=isset($_POST['form']);
-$organ=isset($_POST['form']);
-$slider=isset($_POST['form']);
-// $organ= $_POST["organ"];
-// $date= $_POST["date"];
-// $slider= $_POST["slider"];
+$nom=$_POST['nom'];
+$date=$_POST['date'];
+$organ=$_POST['organ'];
+$partage=$_POST['partage'];
 
-echo ("Nom : ".$nom."Date de l'observation : ".$date."<br> Légende photo: ".$organ."<br> Partage avec la communauté : " .$slider. "<br>");
+echo ("Nom : ".$nom."<br>Date de l'observation : ".$date."<br> Légende photo: ".$organ."<br> Partage avec la communauté : " .$partage. ".<br>");
 
 ?>

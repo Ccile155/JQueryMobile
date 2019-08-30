@@ -2,30 +2,30 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <!-- <meta name="viewport" content="width=device-width, initial-scale-1"> -->
     <link rel="stylesheet" href="themes/cust.min.css" />
     <link rel="stylesheet" href="themes/jquery.mobile.icons.min.css" />
     <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile.structure-1.4.5.min.css" />
     <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
-    <link href="https://fonts.googleapis.com/css?family=Nunito&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
 
     <style type="text/css">
-        body{font-family: 'Nunito', sans-serif;}
+        body, .ui-header{font-family: 'Corbel', arial !important;}
+
         #page3, #page4 {
-            color:aliceblue;
-            background: url("images/leaf.jpeg");
+            /* color:aliceblue; */
+            /* background: url("images/leaf.jpeg");
             background-repeat:no-repeat;
             background-position:center center;
-            background-attachment:scroll;
-            background-size:100% 100%;
+            background-attachment:scroll; */
+            /* background-size:100% 100%; */
         }
         #page2 {
             background: url("images/yellow.jpg") !important;
             background-repeat:no-repeat;
             background-position:center center;
             background-attachment:scroll;
-            background-size:100% 100%;
+            /* background-size:100% 100%; */
         }
 
         .obs{
@@ -48,34 +48,49 @@
         function onSuccess(data, status){
             $("#result").html(data);
         }
+        function onSuccess2(data, status){
+            $("#titre").html(data);
+        }
         function onError(data, status){
             alert("Le formulaire n'est pas correctement rempli.");
         }
 
         $(document).ready(function(){
-            $("#Formsubmit").click(function(){
+            $("#formsubmit").click(function(){
                 var formData = $("#appelAjax").serialize();
-                alert(formData);
                 $.ajax({
                     type:"POST",
-                    url: 'form.php',
-                    data:{'form': formData},
+                    url: 'http://localhost/JQueryMobile/form.php',
+                    data: formData,
                     cache: false,
                     success: onSuccess,
-                    error: onError,
+                    error: onError
+                });                
+                $.ajax({
+                    type:"POST",
+                    url: 'http://localhost/JQueryMobile/form2.php',
+                    data: formData,
+                    cache: false,
+                    success: onSuccess2,
+                    error: onError
                 });
             });
 
             $(".ui-btn-icon-right").click(function() {
-                $("#obs").toggle();
+                if ($(".ui-btn-icon-right").hasClass(".ui-icon-minus")){
+                    $(".ui-icon-minus").removeClass().addClass(".ui-icon-plus");
+                } else {
+                    $(".ui-icon-plus").removeClass().addClass(".ui-icon-minus");
+                }
+                $(".obs").toggle();
             });
         })
     </script>
-
 	<title>JQuery Mobile</title>
 </head>
+
 <body>
-<!-- ################################################################# 1 -->
+<!--  ################################################################# 1 -->
     <div data-role="page" id="page1" data-theme="a">
         <div data-role="header">
             <h1>FlorOnline</h1>
@@ -97,14 +112,15 @@
             </div>
         </div>
         <div data-role="content">
-            <h4>Dernières observations :</h4>
+            <h2>Observations du jour</h2>
+            <br>
             <div class="ui-corner-all custom-corners" style="text-align:center;">
                       <div class="ui-bar ui-bar-a ui-icon-minus ui-btn-icon-right">
                         <h3>Nom</h3>
                       </div>
                       <div class="ui-body ui-body-a obs" style="color:  #212f3d;">
                         <div style="width: 100px; height: 100px; overflow:hidden; margin:0;border-radius: 100px;">
-                            <img src="images/fleur.jpg" style="width: 100%;">
+                            <img src="images/fleur.jpg" style="height: 100%;">
                         </div>
                         <p> Nom: flora florae </p>
                         <p> Date de l'observation : 12/03/2018 </p>
@@ -115,10 +131,10 @@
             <h2>FlorOnline</h2>
         </div>
     </div>
-<!-- ################################################################# 2 -->
+    <!--  ################################################################# 2 -->
     <div data-role="page" id="page2" data-theme="b">
         <div data-role="header">
-            <h1>Settings</h1>
+            <h1>FlorOnline</h1>
             <div data-role="navbar" class="ui-shadow ui-btn-up-c">
                 <ul class="ui-btn-inner">
                     <li>
@@ -138,6 +154,7 @@
         </div>     
 
         <div data-role="content">
+            <h2>Settings</h2>
             <br>
             <label for="slider-fill">Stored image resolution (Mo)</label>
             <input type="range" name="slider-fill" id="slider-fill" value="60" min="0" max="100" step="10" data-highlight="true">
@@ -153,10 +170,13 @@
             <h2>FlorOnline</h2>
         </div>
     </div>
-<!-- ################################################################# 3 -->
+<!--  ################################################################# 3 -->
+<?php
+	include ('connect.php');
+ ?>
     <div data-role="page" id="page3" data-theme="a">
             <div data-role="header">
-                <h1>Nouvelle Observation</h1>
+                <h1>FlorOnline</h1>
                 <div data-role="navbar" data-type="horizontal" data-mini="true">
                     <ul class="ui-btn-inner">
                         <li>
@@ -175,18 +195,19 @@
                 </div>
             </div>
             <div data-role="content">
-                <h4>Détails de l'observation</h4>
-                <form action="appelAjax" method="POST">
+                <h2>Nouvelle observation</h2>
+                
+                <form id="appelAjax">
 
                     <!-- <div style="max-width:400px;">
                     <label for="file">File:</label>
                     <input type="file" name="file" id="file" value="">
-                    </div>
-                    <div class="ui-field-contain">
-                        <label for="textinput-1">Nom</label>
-                        <input type="text" name="nom" id="nom" placeholder="Nom" value="">
                     </div>-->
-    
+                    <div class="ui-field-contain">
+                        <label for="nom" style="width: 15%; margin: 0;">Nom :</label>
+                        <input type="text" name="nom" id="nom" placeholder="Genre espèce">
+                    </div>
+                    <br>
                     <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
                         <legend>Partie de la plante :</legend>
                             <input type="radio" name="organ" id="radio-choice-a" value="Fleur" checked="checked">
@@ -198,26 +219,29 @@
                             <input type="radio" name="organ" id="radio-choice-d" value="Ensemble">
                                 <label for="radio-choice-d">Ensemble</label>
                     </fieldset>
-    
-                    <!--<div style="width:40%;">
-                        <label for="date">Date:</label>
-                        <input type="date" name="date" id="date" value="">
-                    </div>-->
+                    <br>
+                    <div class="ui-field-contain">
+                        <label for="date" style="width: 15%; margin: 0;">Date :</label>
+                        <input type="date" name="date" id="date">
+                    </div>
 
-                    <label for="slider-flip-m">Share your observations with community:</label>
-                    <select name="slider" id="slider-flip-m" data-role="slider" data-mini="true">
-                        <option value="hide">No</option>
-                        <option value="share" selected="">Yes</option>
-                    </select>
+                    <br>
+                        <label for="slider">Share your observations with community:</label>
+                        <select name="slider" id="slider" data-role="slider" data-mini="true">
+                            <option value="privé">No</option>
+                            <option value="partagé" selected="">Yes</option>
+                        </select>
 
-                    <a href="#page4" type="submit" data-role="button" class="ui-btn ui-shadow ui-btn-corner-all ui-btn-icon-left ui-icon-check" id="Formsubmit" style="width: 60px;" data-mini="true">Save</a>
+                    <div style="text-align: center; margin:auto;">
+                        <a href="#page4" type="submit" data-role="button" class="ui-btn ui-shadow ui-btn-corner-all ui-btn-icon-left ui-icon-check" id="formsubmit" style="width: 60px;" data-mini="true">Save</a>
+                    </div>
                 </form>
             </div>
             <div data-role="footer" data-position="fixed">
                 <h2>FlorOnline</h2>
             </div>
         </div>
-<!-- ################################################################# 4 -->
+<!--  ################################################################# 4 -->
         <div data-role="page" id="page4" data-theme="a">
                 <div data-role="header">
                     <h1>FlorOnline</h1>
@@ -239,12 +263,13 @@
                     </div>
                 </div>
                 <div data-role="content">
-                    <h4>Mes Observations</h4>
+                    <h2>Mes Observations</h2>
+                    <br>
                         <div class="ui-corner-all custom-corners" style="text-align:center;">
                               <div class="ui-bar ui-bar-a ui-icon-minus ui-btn-icon-right">
-                                <h3>Nom</h3>
+                                <h3 id="titre"></h3>
                               </div>
-                              <div class="ui-body ui-body-a obs" style="color:white;">
+                              <div class="ui-body ui-body-a obs">
                                 <div style="width: 100px; height: 100px; overflow:hidden; margin:0;border-radius: 100px;">
                                     <img src="images/pink.jpg" style="width: 100%;">
                                 </div>
